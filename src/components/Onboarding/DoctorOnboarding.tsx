@@ -1,8 +1,11 @@
-import { Box, Typography, Chip, Slider, TextField } from "@mui/material";
+import { Box, Typography, Chip, Slider, TextField, Button } from "@mui/material";
 import { FC } from "react";
 import { useAppSelector, useAppDispatch } from "../../types/hooks";
 import DoneIcon from '@mui/icons-material/Done';
-import { doctorInfoActions } from "../../slices/doctorOnboardingSlice";
+import Brightness1Icon from '@mui/icons-material/Brightness1';
+import { doctorInfoActions, doctorInfoAsyncActions } from "../../slices/doctorOnboardingSlice";
+import * as yup from "yup"
+import { AvailabilityData, OnboardingRequest } from "../../types/onboarding";
 
 const timeLookup: any = {
     "0": "00:00",
@@ -55,8 +58,36 @@ const timeLookup: any = {
     "1410": "23:30"
 }
 
+const onboardingValidations = yup.object().shape({
+    qualifications: yup.array()
+        .min(1, "Please select at least one qualification")
+        .required("Please select at least one qualification"),
+    location: yup.string()
+        .required("Please select a location"),
+    specialities: yup.array()
+        .min(1, "Please select at least one speciality")
+        .required("Please select at least one speciality"),
+    availability: yup.object()
+        .test(
+            "at-least-one-slot-selected",
+            "Please select at least one slot for patient appointments",
+            (availability) => {
+                let flag = false
+                for (const day in availability) {
+                    const isSlotSelected = Object.values(availability[day]).some(slot => slot)
+                    if (isSlotSelected) {
+                        flag = isSlotSelected
+                    }    
+                }
+
+                return flag
+            }
+        )
+})
+
 const DoctorOnboarding: FC = () => {
-    const { qualifications, specialities, days, selectedDay, availability } = useAppSelector(state => state.doctorInfo)
+    const { qualifications, specialities,  days, selectedDay, availability } = useAppSelector(state => state.doctorInfo)
+    const { experience, hospital, location, fees } = useAppSelector(state => state.doctorInfo)
     const dispatch = useAppDispatch()
 
     const experienceMarks = [
@@ -70,7 +101,7 @@ const DoctorOnboarding: FC = () => {
         },
     ]
 
-    function experiencetext(value: number) {
+    function experienceText(value: number) {
         return `${value} Years`;
     }
 
@@ -88,6 +119,35 @@ const DoctorOnboarding: FC = () => {
 
     const selectSlot = (slot: string) => {
         dispatch(doctorInfoActions.toggleDaySlot(slot))
+    }
+
+    const attemptOnboarding = () => {
+        const finalAvailability: AvailabilityData = JSON.parse(JSON.stringify(availability))
+        
+        for (const day in finalAvailability) {
+            for (const slot in finalAvailability[day]) {
+                if (finalAvailability[day][slot] === false) {
+                    delete finalAvailability[day][slot]
+                }
+            }
+            if (Object.keys(finalAvailability[day]).length === 0){
+                delete finalAvailability[day]
+            }   
+        }
+
+        const request: OnboardingRequest = {
+            qualifications: qualifications.filter(q => q.selected).map(q => q.title),
+            specialities: specialities.filter(s => s.selected).map(s => s.title),
+            experience: experience,
+            hospital: hospital,
+            location: location,
+            consultationFees: fees,
+            availability: finalAvailability
+        } 
+
+        // TODO: yup validation
+
+        dispatch(doctorInfoAsyncActions.completeOnboarding(request))
     }
 
     // TODO: Redirect back to auth if user is null
@@ -137,7 +197,7 @@ const DoctorOnboarding: FC = () => {
             <Slider
                 valueLabelDisplay="auto"
                 marks={experienceMarks}
-                getAriaValueText={experiencetext}
+                getAriaValueText={experienceText}
                 defaultValue={1} step={1} min={1} max={10}
                 onChange={(e, val) => dispatch(doctorInfoActions.setExperience(val as number))}
             />
@@ -171,6 +231,12 @@ const DoctorOnboarding: FC = () => {
                 }
             </Box>
 
+            {/* TODO: Use some kind of place picker */}
+            <Typography>
+                Consultation Fees
+            </Typography>
+            <TextField type="number" onChange={e => dispatch(doctorInfoActions.setFees(Number(e.target.value)))} />
+
             {/* TODO: Different styling for chips */}
             <Typography>
                 Availability
@@ -189,7 +255,7 @@ const DoctorOnboarding: FC = () => {
                         return day === selectedDay
                             ? <Chip label={day} color="primary" onClick={e => selectDay(day)} />
                             : hasSlots
-                                ? <Chip label={day} onClick={e => selectDay(day)} icon={<DoneIcon />}/>
+                                ? <Chip label={day} onClick={e => selectDay(day)} icon={<Brightness1Icon sx={{ "&&": { color: "white", transform: "scale(0.5)" }}}/>} />
                                 : <Chip label={day} onClick={e => selectDay(day)} />
                     })
                 }
@@ -211,6 +277,8 @@ const DoctorOnboarding: FC = () => {
                         })
                 }
             </Box>
+
+            <Button onClick={attemptOnboarding}>Submit</Button>
         </Box>
     </Box>
 }

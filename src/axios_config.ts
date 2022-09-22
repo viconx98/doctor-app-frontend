@@ -10,6 +10,7 @@ export enum Endpoints {
     Signup = "/auth/signup",
     Signin = "/auth/signin",
     OnboardStatus = "/onboardStatus",
+    Onbard = "/onboard",
 }
 
 const axiosClient = axios.create({

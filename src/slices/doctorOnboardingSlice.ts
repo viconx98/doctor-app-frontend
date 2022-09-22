@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosClient, { Endpoints } from "../axios_config";
 import { AuthData, SigninRequest, SignupRequest } from "../types/auth";
+import { AvailabilityData, OnboardingRequest } from "../types/onboarding";
 import { SliceState } from "../types/slice";
 
 interface DoctorInfoState extends SliceState {
@@ -12,11 +13,8 @@ interface DoctorInfoState extends SliceState {
     location: string;
     days: string[];
     selectedDay: string;
-    availability: {
-        [key: string]: {
-            [key: string]: boolean
-        }
-    }
+    fees: number;
+    availability: AvailabilityData;
 }
 
 // TODO: Fetch qualifications and specialities from backend
@@ -44,16 +42,27 @@ const initialState: DoctorInfoState = {
     location: "",
     days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
     selectedDay: "monday",
-    availability: {}
+    availability: {},
+    fees: 1
 }
 
 // Generate availability object
 for (const day of initialState.days) {
-    initialState.availability[day] = {}   
+    initialState.availability[day] = {}
     for (let slot = 0; slot < 1440; slot += 30) {
-        initialState.availability[day][slot] = false   
+        initialState.availability[day][slot] = false
     }
 }
+
+const completeOnboarding = createAsyncThunk(
+    "doctorInfoSlice/completeOnboarding",
+    async (obRequest: OnboardingRequest) => {
+        const response = await axiosClient.post(Endpoints.Doctor + Endpoints.Onbard, obRequest)
+
+        return response.data
+    }
+)
+
 
 const doctorInfoSlice = createSlice({
     name: "doctorInfoSlice",
@@ -76,6 +85,9 @@ const doctorInfoSlice = createSlice({
         setLocation(state, action: PayloadAction<string>) {
             state.location = action.payload
         },
+        setFees(state, action: PayloadAction<number>) {
+            state.fees = action.payload
+        },
         setSelectedDay(state, action: PayloadAction<string>) {
             state.selectedDay = action.payload
         },
@@ -83,14 +95,22 @@ const doctorInfoSlice = createSlice({
             const day = state.selectedDay
             const slot = action.payload
 
-            state.availability[day][slot] = !state.availability[day][slot] 
+            state.availability[day][slot] = !state.availability[day][slot]
         }
     },
-    extraReducers: {}
+    extraReducers: (builder) => {
+        builder.addCase(completeOnboarding.pending, (state, action) => {
+
+        }).addCase(completeOnboarding.fulfilled, (state, action) => {
+            
+        }).addCase(completeOnboarding.rejected, (state, action) => {
+            console.log(action)
+        })
+    }
 })
 
 
 export const doctorInfoActions = { ...doctorInfoSlice.actions }
-export const doctorInfoAsyncActions = {}
+export const doctorInfoAsyncActions = { completeOnboarding }
 
 export default doctorInfoSlice.reducer
