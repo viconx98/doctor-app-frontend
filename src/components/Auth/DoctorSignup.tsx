@@ -27,10 +27,9 @@ export const signupValidations = yup.object().shape({
         .required("Required")
 })
 
-const UserSignup: FC = () => {
+const DoctorSignup: FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-
 
     const formik = useFormik({
         initialValues: {
@@ -41,7 +40,7 @@ const UserSignup: FC = () => {
         },
         validationSchema: signupValidations,
         onSubmit: (values) => {
-            dispatch(authAsyncActions.userSignup({
+            dispatch(authAsyncActions.doctorSignup({
                 email: values.email,
                 password: values.password,
                 name: values.fullname
@@ -56,14 +55,13 @@ const UserSignup: FC = () => {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-
         width: "100%",
         height: "100%"
     }}>
         <Card sx={{
             p: 4
         }}> 
-            <p>User Signup</p>
+            <p>Doctor Signup</p>
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{
                     display: "flex",
@@ -118,7 +116,7 @@ const UserSignup: FC = () => {
                     <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
                         Sign up
                     </Button>
-                    <Button color="primary" variant="text" fullWidth onClick={e => navigate("/auth")}>
+                    <Button color="primary" variant="text" fullWidth onClick={e => navigate("/auth/doctor/signin")}>
                         Sign in
                     </Button>
                 </Box>
@@ -129,4 +127,4 @@ const UserSignup: FC = () => {
     </Box>
 }
 
-export default UserSignup
+export default DoctorSignup

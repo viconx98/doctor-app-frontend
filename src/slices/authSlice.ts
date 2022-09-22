@@ -23,7 +23,7 @@ const initialState: AuthState = {
 const userSignup = createAsyncThunk(
     "authSlice/userSignup",
     async (data: SignupRequest) => {
-        const response = await axiosClient.post(Endpoints.Doctor + Endpoints.Signup, data)
+        const response = await axiosClient.post(Endpoints.Patient + Endpoints.Signup, data)
 
         const authData = response.data as AuthData
 
@@ -35,6 +35,32 @@ const userSignup = createAsyncThunk(
 
 const userSignin = createAsyncThunk(
     "authSlice/userSignin",
+    async (data: SigninRequest) => {
+        const response = await axiosClient.post(Endpoints.Patient + Endpoints.Signin, data)
+
+        const authData = response.data as AuthData
+
+        localStorage.setItem("authdata", JSON.stringify(authData))
+
+        return authData
+    }
+)
+
+const doctorSignup = createAsyncThunk(
+    "authSlice/doctorSignup",
+    async (data: SignupRequest) => {
+        const response = await axiosClient.post(Endpoints.Doctor + Endpoints.Signup, data)
+
+        const authData = response.data as AuthData
+
+        localStorage.setItem("authdata", JSON.stringify(authData))
+
+        return authData
+    }
+)
+
+const doctorSignin = createAsyncThunk(
+    "authSlice/doctorSignin",
     async (data: SigninRequest) => {
         const response = await axiosClient.post(Endpoints.Doctor + Endpoints.Signin, data)
 
@@ -75,11 +101,19 @@ const authSlice = createSlice({
         }).addCase(userSignin.rejected, (state, action) => {
 
         })
+
+        builder.addCase(doctorSignup.pending, (state, action) => {
+
+        }).addCase(doctorSignup.fulfilled, (state, action) => {
+
+        }).addCase(doctorSignup.rejected, (state, action) => {
+
+        })
     }
 })
 
 
 export const authActions = { ...authSlice.actions }
-export const authAsyncActions = { userSignup, userSignin }
+export const authAsyncActions = { userSignup, userSignin, doctorSignup, doctorSignin }
 
 export default authSlice.reducer

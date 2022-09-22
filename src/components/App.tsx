@@ -6,6 +6,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles"
 import { blue } from '@mui/material/colors'
 import UserSignup from './Auth/UserSignup';
 import UserSignin from './Auth/UserSignin';
+import DoctorSignup from './Auth/DoctorSignup';
+import DoctorSignin from './Auth/DoctorSignin';
 
 const appTheme = createTheme({
     typography: {
@@ -19,7 +21,7 @@ const appTheme = createTheme({
         primary: {
             main: blue[500],
             light: blue[100],
-        },
+        }
     }
 })
 
@@ -33,8 +35,8 @@ function App() {
 			<Route path="/auth" element={<BaseAuth/>}> 
 				<Route index element={<UserSignin/>}/>
 				<Route path="/auth/signup" element={<UserSignup/>}/>
-				<Route path="/auth/doctor/signin" element={<h1>Doctor sign in</h1>}/>
-				<Route path="/auth/doctor/signup" element={<h1>Doctor sign up</h1>}/>
+				<Route path="/auth/doctor/signup" element={<DoctorSignup/>}/>
+				<Route path="/auth/doctor/signin" element={<DoctorSignin/>}/>
 			</Route>
 
 

@@ -1,9 +1,11 @@
-import { Box, Card, TextField, Button } from "@mui/material";
+import { Box, Card, TextField, Button, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { FC } from "react";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup"
 import { authAsyncActions } from "../../slices/authSlice";
 import { useAppDispatch } from "../../types/hooks";
+import TextButton from "../reusable/TextButton";
 
 export const signupValidations = yup.object().shape({
     email: yup.string()
@@ -16,6 +18,7 @@ export const signupValidations = yup.object().shape({
 
 const UserSignin: FC = () => {
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     const formik = useFormik({
         initialValues: {
@@ -37,12 +40,13 @@ const UserSignin: FC = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "column",
         width: "100%",
         height: "100%"
     }}>
         <Card sx={{
             p: 4
-        }}> 
+        }}>
             <p>User Signin</p>
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{
@@ -76,12 +80,14 @@ const UserSignin: FC = () => {
                     <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
                         Sign in
                     </Button>
-                    <Button color="primary" variant="text" fullWidth>
+                    <Button color="primary" variant="text" fullWidth onClick={e => navigate("/auth/signup")}>
                         Sign up
                     </Button>
                 </Box>
             </form>
         </Card>
+        
+        <TextButton onClick={e => navigate("/auth/doctor/signin")}>Are you a doctor? Sign in here</TextButton>
     </Box>
 }
 

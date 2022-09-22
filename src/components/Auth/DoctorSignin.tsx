@@ -4,47 +4,32 @@ import { FC } from "react";
 import * as yup from "yup"
 import { authAsyncActions } from "../../slices/authSlice";
 import { useAppDispatch } from "../../types/hooks";
-import { useNavigate } from "react-router-dom";
 import TextButton from "../reusable/TextButton";
+import { useNavigate } from "react-router-dom";
 
 export const signupValidations = yup.object().shape({
-    fullname: yup.string()
-        .min(2, "Full name is too short at least 2 characters are required")
-        .max(20, "Full name is too long at only 20 characters are allowed")
-        .required("Required"),
-
     email: yup.string()
         .email("Invalid email")
         .required("Required"),
 
     password: yup.string()
-        .min(6, "Password is too short at least 6 characters are required")
-        .max(50, "Password is too long only 50 characters are allowed")
-        .required("Required"),
-
-    confirmPassword: yup.string()
-        .oneOf([yup.ref("password"), null], "Passwords don't match")
         .required("Required")
 })
 
-const UserSignup: FC = () => {
+const DoctorSignin: FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-
     const formik = useFormik({
         initialValues: {
-            fullname: "",
             email: "",
             password: "",
-            confirmPassword: ""
         },
         validationSchema: signupValidations,
         onSubmit: (values) => {
-            dispatch(authAsyncActions.userSignup({
+            dispatch(authAsyncActions.doctorSignin({
                 email: values.email,
                 password: values.password,
-                name: values.fullname
             }))
         }
     })
@@ -56,31 +41,19 @@ const UserSignup: FC = () => {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-
         width: "100%",
         height: "100%"
     }}>
         <Card sx={{
             p: 4
         }}> 
-            <p>User Signup</p>
+            <p>Doctor Signin</p>
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{
                     display: "flex",
                     flexDirection: "column",
                     gap: 4
                 }}>
-                    <TextField
-                        fullWidth
-                        id="fullname"
-                        name="fullname"
-                        label="Full name"
-                        value={formik.values.fullname}
-                        onChange={formik.handleChange}
-                        error={formik.touched.fullname && Boolean(formik.errors.fullname)}
-                        helperText={formik.touched.fullname && formik.errors.fullname}
-                        type="text"
-                    />
                     <TextField
                         fullWidth
                         id="email"
@@ -103,30 +76,18 @@ const UserSignup: FC = () => {
                         helperText={formik.touched.password && formik.errors.password}
                         type="password"
                     />
-                    <TextField
-                        fullWidth
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        label="Confirm password"
-                        value={formik.values.confirmPassword}
-                        onChange={formik.handleChange}
-                        error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-                        helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-                        type="password"
-                    />
 
                     <Button color="primary" variant="contained" fullWidth type="submit" sx={{ mt: 2 }}>
-                        Sign up
-                    </Button>
-                    <Button color="primary" variant="text" fullWidth onClick={e => navigate("/auth")}>
                         Sign in
+                    </Button>
+                    <Button color="primary" variant="text" fullWidth onClick={e => navigate("/auth/doctor/signup")}>
+                        Sign up
                     </Button>
                 </Box>
             </form>
         </Card>
-
-        <TextButton onClick={e => navigate("/auth/doctor/signin")}>Are you a doctor? Sign in here</TextButton>
+        <TextButton onClick={e => navigate("/auth")}>Looking for a doctor? Sign in here</TextButton>
     </Box>
 }
 
-export default UserSignup
+export default DoctorSignin
