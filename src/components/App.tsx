@@ -38,7 +38,11 @@ function App() {
 				<Route path="/auth/doctor/signup" element={<DoctorSignup/>}/>
 				<Route path="/auth/doctor/signin" element={<DoctorSignin/>}/>
 			</Route>
-
+			
+			<Route path="/onboard" element={<BaseAuth/>}> 
+				<Route path="doctor" element={<UserSignup/>}/>
+				<Route path="user" element={<DoctorSignup/>}/>
+			</Route>
 
 		</Routes>
 	</ThemeProvider>

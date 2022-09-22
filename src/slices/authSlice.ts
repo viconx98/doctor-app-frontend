@@ -5,19 +5,23 @@ import { AuthData, SigninRequest, SignupRequest } from "../types/auth";
 import { SliceState } from "../types/slice";
 
 interface AuthState extends SliceState {
-    authData: AuthData | null
-    authComplete: boolean,
+    authData: AuthData | null;
+    authComplete: boolean;
+    onboardStatusDoctor: boolean;
+    onboardStatusUser: boolean;
 }
 
 const initialAuthData = JSON.parse(localStorage.getItem("authdata")!)
 
 const initialState: AuthState = {
-    isLoading: false,
+    isLoading: true,
     loading: null,
     isError: false,
     error: null,
     authData: initialAuthData,
-    authComplete: false
+    authComplete: initialAuthData !== null,
+    onboardStatusDoctor: false,
+    onboardStatusUser: false
 }
 
 const userSignup = createAsyncThunk(
@@ -72,6 +76,24 @@ const doctorSignin = createAsyncThunk(
     }
 )
 
+const doctorOnboardStatus = createAsyncThunk(
+    "authSlice/doctorOnboardStatus",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Doctor + Endpoints.OnboardStatus)
+
+        return response.data.onboardingCompleted
+    }
+)
+
+const userOnboardStatus = createAsyncThunk(
+    "authSlice/userOnboardStatus",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Patient + Endpoints.OnboardStatus)
+
+        return response.data.onboardingCompleted
+    }
+)
+
 const authSlice = createSlice({
     name: "authSlice",
     initialState: initialState,
@@ -86,34 +108,103 @@ const authSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
+        // User sign up
         builder.addCase(userSignup.pending, (state, action) => {
-
+            state.isLoading = true
         }).addCase(userSignup.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            state.error = null
 
+            state.authComplete = true
+            state.authData = action.payload
         }).addCase(userSignup.rejected, (state, action) => {
-
+            state.isError = true
+            state.error = action.error.message!
         })
-
+        
+        // User sign in
         builder.addCase(userSignin.pending, (state, action) => {
+            state.isLoading = true
 
         }).addCase(userSignin.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            state.error = null
 
+            state.authComplete = true
+            state.authData = action.payload
         }).addCase(userSignin.rejected, (state, action) => {
-
+            state.isError = true
+            state.error = action.error.message!
         })
 
+        // doctor sign up
         builder.addCase(doctorSignup.pending, (state, action) => {
-
+            state.isLoading = true
+            
         }).addCase(doctorSignup.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            state.error = null
 
+            state.authComplete = true
+            state.authData = action.payload
         }).addCase(doctorSignup.rejected, (state, action) => {
+            state.isError = true
+            state.error = action.error.message!
+        })
 
+        // doctor sign in
+        builder.addCase(doctorSignin.pending, (state, action) => {
+            state.isLoading = true
+
+        }).addCase(doctorSignin.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            state.error = null
+
+            state.authComplete = true
+            state.authData = action.payload
+        }).addCase(doctorSignin.rejected, (state, action) => {
+            state.isError = true
+            state.error = action.error.message!
+        })
+        
+        // doctor on board status 
+        builder.addCase(doctorOnboardStatus.pending, (state, action) => {
+            state.isLoading = true
+            
+        }).addCase(doctorOnboardStatus.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            state.error = null
+
+            state.onboardStatusDoctor = action.payload
+        }).addCase(doctorOnboardStatus.rejected, (state, action) => {
+            state.isError = true
+            state.error = action.error.message!
+        })
+        
+        // user on board status 
+        builder.addCase(userOnboardStatus.pending, (state, action) => {
+            state.isLoading = true
+
+        }).addCase(userOnboardStatus.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            state.error = null
+
+            state.onboardStatusUser = action.payload
+        }).addCase(userOnboardStatus.rejected, (state, action) => {
+            state.isError = true
+            state.error = action.error.message!
         })
     }
 })
 
 
 export const authActions = { ...authSlice.actions }
-export const authAsyncActions = { userSignup, userSignin, doctorSignup, doctorSignin }
+export const authAsyncActions = { userSignup, userSignin, doctorSignup, doctorSignin, doctorOnboardStatus, userOnboardStatus }
 
 export default authSlice.reducer

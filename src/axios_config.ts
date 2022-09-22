@@ -8,7 +8,8 @@ export enum Endpoints {
     Doctor = "/doctor",
     Patient = "/patient",
     Signup = "/auth/signup",
-    Signin = "/auth/signin"
+    Signin = "/auth/signin",
+    OnboardStatus = "/onboardStatus",
 }
 
 const axiosClient = axios.create({
