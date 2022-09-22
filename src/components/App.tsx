@@ -8,41 +8,39 @@ import UserSignup from './Auth/UserSignup';
 import UserSignin from './Auth/UserSignin';
 import DoctorSignup from './Auth/DoctorSignup';
 import DoctorSignin from './Auth/DoctorSignin';
+import DoctorOnboarding from "./Onboarding/DoctorOnboarding"
 
 const appTheme = createTheme({
-    typography: {
-        fontFamily: [
-            'Poppins',
-        ].join(','),
-    },
+	typography: {
+		fontFamily: [
+			'Poppins',
+		].join(','),
+	},
 
-    palette: {
-        mode: "dark",
-        primary: {
-            main: blue[500],
-            light: blue[100],
-        }
-    }
+	palette: {
+		mode: "dark",
+		primary: {
+			main: blue[500],
+			light: blue[100],
+		}
+	}
 })
 
 function App() {
 	return <ThemeProvider theme={appTheme}>
 		<CssBaseline />
 		<Routes>
-			<Route path="/" element={<h1>Home</h1>}> 
+			<Route path="/" element={<h1>Home</h1>}>
 			</Route>
 
-			<Route path="/auth" element={<BaseAuth/>}> 
-				<Route index element={<UserSignin/>}/>
-				<Route path="/auth/signup" element={<UserSignup/>}/>
-				<Route path="/auth/doctor/signup" element={<DoctorSignup/>}/>
-				<Route path="/auth/doctor/signin" element={<DoctorSignin/>}/>
+			<Route path="/auth" element={<BaseAuth />}>
+				<Route index element={<UserSignin />} />
+				<Route path="/auth/signup" element={<UserSignup />} />
+				<Route path="/auth/doctor/signup" element={<DoctorSignup />} />
+				<Route path="/auth/doctor/signin" element={<DoctorSignin />} />
 			</Route>
-			
-			<Route path="/onboard" element={<BaseAuth/>}> 
-				<Route path="doctor" element={<UserSignup/>}/>
-				<Route path="user" element={<DoctorSignup/>}/>
-			</Route>
+
+			<Route path="/onboard/doctor" element={<DoctorOnboarding />} />
 
 		</Routes>
 	</ThemeProvider>

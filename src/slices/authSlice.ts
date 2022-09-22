@@ -9,6 +9,7 @@ interface AuthState extends SliceState {
     authComplete: boolean;
     onboardStatusDoctor: boolean;
     onboardStatusUser: boolean;
+    isVerifying: boolean
 }
 
 const initialAuthData = JSON.parse(localStorage.getItem("authdata")!)
@@ -21,7 +22,8 @@ const initialState: AuthState = {
     authData: initialAuthData,
     authComplete: initialAuthData !== null,
     onboardStatusDoctor: false,
-    onboardStatusUser: false
+    onboardStatusUser: false,
+    isVerifying: false
 }
 
 const userSignup = createAsyncThunk(
@@ -174,29 +176,35 @@ const authSlice = createSlice({
         // doctor on board status 
         builder.addCase(doctorOnboardStatus.pending, (state, action) => {
             state.isLoading = true
+            state.isVerifying = true
             
         }).addCase(doctorOnboardStatus.fulfilled, (state, action) => {
             state.isLoading = false
+            state.isVerifying = false
             state.isError = false
             state.error = null
-
+            
             state.onboardStatusDoctor = action.payload
         }).addCase(doctorOnboardStatus.rejected, (state, action) => {
+            state.isVerifying = false
             state.isError = true
             state.error = action.error.message!
         })
         
         // user on board status 
         builder.addCase(userOnboardStatus.pending, (state, action) => {
+            state.isVerifying = true
             state.isLoading = true
-
+            
         }).addCase(userOnboardStatus.fulfilled, (state, action) => {
+            state.isVerifying = false
             state.isLoading = false
             state.isError = false
             state.error = null
-
+            
             state.onboardStatusUser = action.payload
         }).addCase(userOnboardStatus.rejected, (state, action) => {
+            state.isVerifying = false
             state.isError = true
             state.error = action.error.message!
         })

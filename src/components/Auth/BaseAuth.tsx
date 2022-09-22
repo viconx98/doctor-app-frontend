@@ -8,32 +8,38 @@ import { authAsyncActions } from "../../slices/authSlice";
 
 // TODO: Remove the weird margin from top
 const BaseAuth: FC = () => {
-    const { authData, authComplete, onboardStatusDoctor, onboardStatusUser, isLoading } = useAppSelector(state => state.auth)
+    const { authData, authComplete, onboardStatusDoctor, onboardStatusUser, isVerifying } = useAppSelector(state => state.auth)
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
 
 
     useEffect(() => {
-        if (authData?.user.type === "doctor") {
-            dispatch(authAsyncActions.doctorOnboardStatus())
-        } else if (authData?.user.type === "patient") (
-            dispatch(authAsyncActions.userOnboardStatus())
-        )
+        if (authComplete) {
+            if (authData?.user.type === "doctor") {
+                dispatch(authAsyncActions.doctorOnboardStatus())
+            } else if (authData?.user.type === "patient") (
+                dispatch(authAsyncActions.userOnboardStatus())
+            )
+        }
     }, [authComplete])
 
     useEffect(() => {
-        if (onboardStatusDoctor) {
-            navigate("/")
-        } else {
-            navigate("/onboard/doctor")
+        if (authData?.user.type === "doctor") {
+            if (onboardStatusDoctor) {
+                navigate("/")
+            } else {
+                navigate("/onboard/doctor")
+            }
         }
     }, [onboardStatusDoctor])
 
     useEffect(() => {
-        if (onboardStatusUser) {
-            navigate("/")
-        } else {
-            navigate("/onboard/user")
+        if (authData?.user.type === "patient") {
+            if (onboardStatusUser) {
+                navigate("/")
+            } else {
+                navigate("/onboard/user")
+            }
         }
     }, [onboardStatusUser])
 
@@ -43,7 +49,7 @@ const BaseAuth: FC = () => {
         width: "100%",
     }}>
         {
-            isLoading
+            isVerifying
                 ? <FullscreenLoading />
                 : <Outlet />
         }
