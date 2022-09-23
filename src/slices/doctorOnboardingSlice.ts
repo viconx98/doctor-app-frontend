@@ -14,6 +14,8 @@ interface DoctorInfoState extends SliceState {
     selectedDay: string;
     fees: number;
     availability: AvailabilityData;
+    onBoardingComplete: boolean;
+
 }
 
 // TODO: Fetch qualifications and specialities from backend
@@ -42,7 +44,8 @@ const initialState: DoctorInfoState = {
     days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
     selectedDay: "monday",
     availability: {},
-    fees: 1
+    fees: 1,
+    onBoardingComplete: false
 }
 
 // Generate availability object
@@ -99,11 +102,14 @@ const doctorInfoSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(completeOnboarding.pending, (state, action) => {
-
+            state.isLoading = true
         }).addCase(completeOnboarding.fulfilled, (state, action) => {
-            
+            state.isLoading = false
+            state.onBoardingComplete = true
         }).addCase(completeOnboarding.rejected, (state, action) => {
-            console.log(action)
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
         })
     }
 })

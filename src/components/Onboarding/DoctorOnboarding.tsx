@@ -1,11 +1,12 @@
 import { Box, Typography, Chip, Slider, TextField, Button } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../types/hooks";
 import DoneIcon from '@mui/icons-material/Done';
 import Brightness1Icon from '@mui/icons-material/Brightness1';
 import { doctorInfoActions, doctorInfoAsyncActions } from "../../slices/doctorOnboardingSlice";
 import * as yup from "yup"
 import { AvailabilityData, DoctorOnboardingRequest } from "../../types/onboarding";
+import {useNavigate} from "react-router-dom"
 
 const timeLookup: any = {
     "0": "00:00",
@@ -86,9 +87,16 @@ const onboardingValidations = yup.object().shape({
 })
 
 const DoctorOnboarding: FC = () => {
-    const { qualifications, specialities,  days, selectedDay, availability } = useAppSelector(state => state.doctorInfo)
+    const { qualifications, specialities,  days, selectedDay, availability, onBoardingComplete } = useAppSelector(state => state.doctorInfo)
     const { experience, hospital, location, fees } = useAppSelector(state => state.doctorInfo)
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (onBoardingComplete) {
+            navigate("/")
+        }
+    }, [onBoardingComplete])
 
     const experienceMarks = [
         {

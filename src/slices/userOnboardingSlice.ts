@@ -11,6 +11,7 @@ interface UserInfoState extends SliceState {
     gender: string;
     age: number;
     location: string;
+    onBoardingComplete: boolean;
 }
 
 const initialState: UserInfoState = {
@@ -28,11 +29,12 @@ const initialState: UserInfoState = {
     gender: "female",
     age: 18,
     healthHistory: "",
-    location: ""
+    location: "",
+    onBoardingComplete: false
 }
 
-const attemptOnboarding = createAsyncThunk(
-    "userInfoSlice/attemptOnboarding",
+const completeOnboarding = createAsyncThunk(
+    "userInfoSlice/completeOnboarding",
     async (obRequest: UserOnboardingRequest) => {
         const response = await axiosClient.post(Endpoints.Patient + Endpoints.Onbard, obRequest)
 
@@ -64,12 +66,21 @@ const userInfoSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-
+        builder.addCase(completeOnboarding.pending, (state, action) => {
+            state.isLoading = true
+        }).addCase(completeOnboarding.fulfilled, (state, action) => {
+            state.onBoardingComplete = true
+            
+        }).addCase(completeOnboarding.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
+        })
     },
 })
 
 
 export const userInfoActions = { ...userInfoSlice.actions }
-export const userInfoAsyncActions = {attemptOnboarding}
+export const userInfoAsyncActions = {completeOnboarding}
 
 export default userInfoSlice.reducer

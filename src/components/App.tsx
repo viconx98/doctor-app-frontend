@@ -10,6 +10,8 @@ import DoctorSignup from './Auth/DoctorSignup';
 import DoctorSignin from './Auth/DoctorSignin';
 import DoctorOnboarding from "./Onboarding/DoctorOnboarding"
 import UserOnboarding from './Onboarding/UserOnboarding';
+import BaseHome from './Home/BaseHome';
+import BrowseDoctors from './User/BrowseDoctors';
 
 const appTheme = createTheme({
 	typography: {
@@ -31,7 +33,9 @@ function App() {
 	return <ThemeProvider theme={appTheme}>
 		<CssBaseline />
 		<Routes>
-			<Route path="/" element={<h1>Home</h1>}>
+			<Route path="/" element={<BaseHome/>}>
+				<Route index element={<BrowseDoctors/>} />
+				
 			</Route>
 
 			<Route path="/auth" element={<BaseAuth />}>

@@ -1,11 +1,12 @@
 import { Box, Typography, Chip, Slider, TextField, Button, RadioGroup, FormControlLabel, Radio } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../types/hooks";
 import DoneIcon from '@mui/icons-material/Done';
 import Brightness1Icon from '@mui/icons-material/Brightness1';
 import * as yup from "yup"
 import { AvailabilityData, DoctorOnboardingRequest, UserOnboardingRequest } from "../../types/onboarding";
 import { userInfoActions, userInfoAsyncActions } from "../../slices/userOnboardingSlice";
+import { useNavigate } from "react-router-dom"
 
 const onboardingValidations = yup.object().shape({
     age: yup.number()
@@ -26,7 +27,14 @@ const onboardingValidations = yup.object().shape({
 
 const UserOnboarding: FC = () => {
     const dispatch = useAppDispatch()
-    const { gender, age, healthHistory, location, lookingFor } = useAppSelector(state => state.userInfo)
+    const navigate = useNavigate()
+    const { gender, age, healthHistory, location, lookingFor, onBoardingComplete } = useAppSelector(state => state.userInfo)
+
+    useEffect(() => {
+        if (onBoardingComplete) {
+            navigate("/")
+        }
+    }, [onBoardingComplete])
 
     const toggleLookingFor = (index: number) => {
         dispatch(userInfoActions.toggleLookingFor(index))
@@ -43,9 +51,10 @@ const UserOnboarding: FC = () => {
 
         // TODO: yup validation
 
-        dispatch(userInfoAsyncActions.attemptOnboarding(request))
+        dispatch(userInfoAsyncActions.completeOnboarding(request))
     }
 
+    // TODO: Redirect back to auth if user is null
     return <Box sx={{
         display: "flex",
         alignItems: "center",
