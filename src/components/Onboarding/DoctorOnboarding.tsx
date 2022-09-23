@@ -5,7 +5,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import Brightness1Icon from '@mui/icons-material/Brightness1';
 import { doctorInfoActions, doctorInfoAsyncActions } from "../../slices/doctorOnboardingSlice";
 import * as yup from "yup"
-import { AvailabilityData, OnboardingRequest } from "../../types/onboarding";
+import { AvailabilityData, DoctorOnboardingRequest } from "../../types/onboarding";
 
 const timeLookup: any = {
     "0": "00:00",
@@ -124,6 +124,7 @@ const DoctorOnboarding: FC = () => {
     const attemptOnboarding = () => {
         const finalAvailability: AvailabilityData = JSON.parse(JSON.stringify(availability))
         
+        // Clean up availability object for unused slots
         for (const day in finalAvailability) {
             for (const slot in finalAvailability[day]) {
                 if (finalAvailability[day][slot] === false) {
@@ -135,7 +136,7 @@ const DoctorOnboarding: FC = () => {
             }   
         }
 
-        const request: OnboardingRequest = {
+        const request: DoctorOnboardingRequest = {
             qualifications: qualifications.filter(q => q.selected).map(q => q.title),
             specialities: specialities.filter(s => s.selected).map(s => s.title),
             experience: experience,
@@ -170,7 +171,7 @@ const DoctorOnboarding: FC = () => {
             minHeight: "100vh",
         }}>
             <Typography variant="h4">
-                Doctor
+                User
             </Typography>
 
             <Typography>
@@ -231,7 +232,6 @@ const DoctorOnboarding: FC = () => {
                 }
             </Box>
 
-            {/* TODO: Use some kind of place picker */}
             <Typography>
                 Consultation Fees
             </Typography>

@@ -1,8 +1,7 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosClient, { Endpoints } from "../axios_config";
-import { AuthData, SigninRequest, SignupRequest } from "../types/auth";
-import { AvailabilityData, OnboardingRequest } from "../types/onboarding";
+import { AvailabilityData, DoctorOnboardingRequest } from "../types/onboarding";
 import { SliceState } from "../types/slice";
 
 interface DoctorInfoState extends SliceState {
@@ -56,7 +55,7 @@ for (const day of initialState.days) {
 
 const completeOnboarding = createAsyncThunk(
     "doctorInfoSlice/completeOnboarding",
-    async (obRequest: OnboardingRequest) => {
+    async (obRequest: DoctorOnboardingRequest) => {
         const response = await axiosClient.post(Endpoints.Doctor + Endpoints.Onbard, obRequest)
 
         return response.data

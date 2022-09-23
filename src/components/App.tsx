@@ -9,6 +9,7 @@ import UserSignin from './Auth/UserSignin';
 import DoctorSignup from './Auth/DoctorSignup';
 import DoctorSignin from './Auth/DoctorSignin';
 import DoctorOnboarding from "./Onboarding/DoctorOnboarding"
+import UserOnboarding from './Onboarding/UserOnboarding';
 
 const appTheme = createTheme({
 	typography: {
@@ -41,6 +42,7 @@ function App() {
 			</Route>
 
 			<Route path="/onboard/doctor" element={<DoctorOnboarding />} />
+			<Route path="/onboard/user" element={<UserOnboarding />} />
 
 		</Routes>
 	</ThemeProvider>

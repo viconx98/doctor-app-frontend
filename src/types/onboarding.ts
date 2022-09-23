@@ -4,7 +4,7 @@ export interface AvailabilityData {
     }
 }
 
-export interface OnboardingRequest {
+export interface DoctorOnboardingRequest {
     qualifications: string[];
     specialities: string[];
     experience: number;
@@ -12,4 +12,12 @@ export interface OnboardingRequest {
     location: string;
     consultationFees: number;
     availability: AvailabilityData
+}
+
+export interface UserOnboardingRequest {
+    gender: string;
+    age: number;
+    healthHistory: string;
+    location: string;
+    lookingFor: string[]
 }

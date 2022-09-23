@@ -7,8 +7,8 @@ import { SliceState } from "../types/slice";
 interface AuthState extends SliceState {
     authData: AuthData | null;
     authComplete: boolean;
-    onboardStatusDoctor: boolean;
-    onboardStatusUser: boolean;
+    onboardStatusDoctor: boolean | null;
+    onboardStatusUser: boolean | null;
     isVerifying: boolean
 }
 
@@ -21,8 +21,8 @@ const initialState: AuthState = {
     error: null,
     authData: initialAuthData,
     authComplete: initialAuthData !== null,
-    onboardStatusDoctor: false,
-    onboardStatusUser: false,
+    onboardStatusDoctor: null,
+    onboardStatusUser: null,
     isVerifying: false
 }
 

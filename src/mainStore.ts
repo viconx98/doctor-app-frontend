@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
 import authReducer from "./slices/authSlice";
 import doctorInfoReduer from "./slices/doctorOnboardingSlice"
+import userInfoReduer from "./slices/userOnboardingSlice"
 
 const mainStore = configureStore({
     reducer: {
         auth: authReducer,
-        doctorInfo: doctorInfoReduer
+        doctorInfo: doctorInfoReduer,
+        userInfo: userInfoReduer
     }
 })
 
