@@ -12,7 +12,8 @@ export enum Endpoints {
     OnboardStatus = "/onboardStatus",
     Onbard = "/onboard",
     AllDoctors = "/doctors",
-    DoctorSlots = "/doctorSlots"
+    DoctorSlots = "/doctorSlots",
+    CreateAppointment = "/createAppointment"
 }
 
 const axiosClient = axios.create({

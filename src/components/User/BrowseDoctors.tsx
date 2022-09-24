@@ -8,7 +8,7 @@ import DoctorCard from "./DoctorCard";
 // TODO: Redirect back to home if user type is not appropriate
 const BrowseDoctors: FC = () => {
     const dispatch = useAppDispatch()
-    const { doctors } = useAppSelector(state => state.userHome)
+    const { doctors, showAppointmentDialog } = useAppSelector(state => state.userHome)
 
     useEffect(() => {
         dispatch(userHomeAsyncActions.fetchAllDoctors())
@@ -23,7 +23,7 @@ const BrowseDoctors: FC = () => {
         gap: 2,
         flexDirection: "column"
     }}>
-        {<AppointmentDialog />}
+        {showAppointmentDialog && <AppointmentDialog />}
         <Box sx={{
             display: "flex",
             flexDirection: "column",

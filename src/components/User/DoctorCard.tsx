@@ -2,12 +2,20 @@ import { Box, Card, Typography, Chip, Button } from "@mui/material";
 import { FC, useEffect } from "react";
 import { Doctor } from "../../types/home";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useAppDispatch, useAppSelector } from "../../types/hooks";
+import { userHomeActions } from "../../slices/userHomeSlice";
 
 interface DoctorCardProps {
     doctor: Doctor
 }
 
 const DoctorCard: FC<DoctorCardProps> = ({ doctor }) => {
+    const dispatch = useAppDispatch()
+
+    const showAppointmentDialog = () => {
+        dispatch(userHomeActions.setShowAppointmentDialog([true, doctor.id]))
+    }
+
     // TODO: Extra esigns, hospital and location    
     return <Card sx={{
         p: 2,
@@ -45,7 +53,11 @@ const DoctorCard: FC<DoctorCardProps> = ({ doctor }) => {
             </Typography>
 
         </Box>
-            <Button variant="contained" startIcon={<CalendarMonthIcon/>} sx={{ml: "auto", mt: "auto"}}>Book an appointment</Button>
+        <Button
+            onClick={showAppointmentDialog}
+            variant="contained"
+            startIcon={<CalendarMonthIcon />}
+            sx={{ ml: "auto", mt: "auto" }}>Book an appointment</Button>
     </Card>
 }
 

@@ -10,3 +10,14 @@ export interface Doctor {
     location: string;
     specialities: string[];
 }
+
+export interface SlotRequest {
+    doctorId: number;
+    date: string;
+}
+
+export interface AppointmentRequest {
+    doctorId: number;
+    date: string;
+    slot: string;
+}
