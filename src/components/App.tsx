@@ -12,6 +12,8 @@ import DoctorOnboarding from "./Onboarding/DoctorOnboarding"
 import UserOnboarding from './Onboarding/UserOnboarding';
 import BaseHome from './Home/BaseHome';
 import BrowseDoctors from './User/BrowseDoctors';
+import { useAppSelector } from "../types/hooks";
+import Dashboard from './Doctor/Dashboard';
 
 const appTheme = createTheme({
 	typography: {
@@ -30,12 +32,25 @@ const appTheme = createTheme({
 })
 
 function App() {
+	const { authData } = useAppSelector(state => state.auth)
+
+
 	return <ThemeProvider theme={appTheme}>
 		<CssBaseline />
 		<Routes>
-			<Route path="/" element={<BaseHome/>}>
-				<Route index element={<BrowseDoctors/>} />
-				
+			<Route path="/" element={<BaseHome />}>
+				{	
+					// TODO: Replace "test" with useful redirect 
+					authData === null
+						? "test"
+						: authData.user.type === "patient"
+							? <>
+								<Route index element={<BrowseDoctors />} />
+							</>
+							: <>
+								<Route index element={<Dashboard />} />
+							</>
+				}
 			</Route>
 
 			<Route path="/auth" element={<BaseAuth />}>

@@ -3,6 +3,7 @@ import { useAppSelector } from "../../types/hooks";
 import { useNavigate } from "react-router-dom";
 import FullscreenLoading from "../reusable/FullscreenLoading";
 import UserHome from "./UserHome";
+import DoctorHome from "./DoctorHome";
 
 // TODO: Remove the weird margin from top
 const BaseHome: FC = () => {
@@ -19,7 +20,7 @@ const BaseHome: FC = () => {
     return authData === null
         ? <FullscreenLoading/>
         : authData.user.type === "doctor"
-            ? <h1>Doctor</h1>
+            ? <DoctorHome/>
             : <UserHome/>
 }
 
