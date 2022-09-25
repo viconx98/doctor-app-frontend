@@ -7,10 +7,17 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Appointment } from "../../types/dashboard";
+import { Appointment, CloseAppointmentRequest } from "../../types/dashboard";
 import { timeLookup } from "../../types/onboarding";
-import { doctorDashboardActions } from "../../slices/doctorDashboardSlice";
+import { doctorDashboardActions, doctorDashboardAsyncActions } from "../../slices/doctorDashboardSlice";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import * as yup from "yup"
+
+const closingValidations = yup.object().shape({
+    prescriptions: yup.string()
+        .required("Please enter your prescriptions")
+})
+
 
 interface AppointmentCardProps {
     expanded: boolean;
@@ -26,12 +33,40 @@ const AppointmentCard: FC<AppointmentCardProps> = ({ expanded, appointment }) =>
     const notesRef = useRef<any>()
     const prescriptionsRef = useRef<any>()
 
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isError, setIsError] = useState<boolean>(false)
+    const [error, setError] = useState<string | null>("This is an error")
+
     const expand = (e: any, exp: any) => {
         if (exp) {
             dispatch(doctorDashboardActions.setCurrentExpanded(appointment.id))
         } else {
             dispatch(doctorDashboardActions.setCurrentExpanded(-1))
         }
+    }
+
+
+    const closeAppointment = async () => {
+        const request: CloseAppointmentRequest = {
+            appointmentId: appointment.id,
+            notes: notesRef.current.value,
+            prescriptions: prescriptionsRef.current.value
+        }
+
+        console.log(request, prescriptionsRef.current.value)
+
+        try {
+            await closingValidations.validate(request)
+
+            dispatch(doctorDashboardAsyncActions.closeAppointment(request))
+        } catch (error: any) {
+            setIsError(true)
+            setError(error.message || "error")
+        }
+    }
+
+    const cancelAppointment = () => {
+        dispatch(doctorDashboardAsyncActions.cancelAppointment(appointment.id))
     }
 
     return <Accordion
@@ -69,13 +104,14 @@ const AppointmentCard: FC<AppointmentCardProps> = ({ expanded, appointment }) =>
             </Box>
         </AccordionSummary>
         <AccordionDetails>
-            <Card sx={{
+            <Card  sx={{
                 gap: 2,
                 display: "flex",
                 width: "100%",
-                flexDirection: "column"
+                flexDirection: "column",
+                boxShadow: "none"
             }}>
-                <Typography>
+                <Typography component="div">
                     Patient History
                     <Typography>
                         {appointment.patient.healthHistory}
@@ -83,19 +119,23 @@ const AppointmentCard: FC<AppointmentCardProps> = ({ expanded, appointment }) =>
                 </Typography>
 
                 <TextField
-                    ref={notesRef}
+                    inputRef={notesRef}
                     type="text"
                     label="Notes"
                 />
 
                 <TextField
-                    ref={prescriptionsRef}
+                    inputRef={prescriptionsRef}
                     type="text"
                     label="Prescriptions"
                     multiline
                     minRows={4}
                     maxRows={4}
                 />
+
+                {isError && <Typography sx={{ ml: "auto", color: "red" }}>
+                    {error}
+                </Typography>}
 
                 <Box sx={{
                     width: "100%",
@@ -106,10 +146,13 @@ const AppointmentCard: FC<AppointmentCardProps> = ({ expanded, appointment }) =>
                     justifyContent: "flex-end"
                 }}>
                     <Button
+                        onClick={cancelAppointment}
                         variant="contained"
                         color="error"
-                    >Cancel</Button>
+                        >Cancel</Button>
                     <Button
+                        disabled={isLoading}
+                        onClick={closeAppointment}
                         variant="contained"
                         startIcon={<DoneIcon />}
                     >Close</Button>

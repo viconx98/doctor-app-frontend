@@ -45,7 +45,7 @@ const DoctorHome: FC = () => {
                     </Typography>
 
                     <Typography>
-                        Appointments
+                        Earnings
                     </Typography>
 
                     <Typography>

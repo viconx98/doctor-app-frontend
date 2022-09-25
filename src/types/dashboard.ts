@@ -30,3 +30,9 @@ export interface AppointmentsRequest {
     date?: string;
     status?: string;
 }
+
+export interface CloseAppointmentRequest {
+    appointmentId: number;
+    notes?: string;
+    prescriptions: string;
+}
