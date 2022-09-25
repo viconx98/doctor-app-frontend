@@ -14,6 +14,7 @@ const DoctorHome: FC = () => {
     }}>
         {/* TODO: Navbar, move it to component */}
         <Box sx={{
+            zIndex: 10,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

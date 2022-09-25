@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit"
 import authReducer from "./slices/authSlice";
+import doctorDashboardReducer from "./slices/doctorDashboardSlice";
 import doctorInfoReduer from "./slices/doctorOnboardingSlice"
 import userHomeReducer from "./slices/userHomeSlice";
 import userInfoReduer from "./slices/userOnboardingSlice"
@@ -9,7 +10,8 @@ const mainStore = configureStore({
         auth: authReducer,
         doctorInfo: doctorInfoReduer,
         userInfo: userInfoReduer,
-        userHome: userHomeReducer
+        userHome: userHomeReducer,
+        doctorDashboard: doctorDashboardReducer
     }
 })
 

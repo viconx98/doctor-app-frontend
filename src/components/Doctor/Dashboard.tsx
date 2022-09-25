@@ -14,13 +14,32 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { AppointmentsRequest } from "../../types/dashboard";
+import { doctorDashboardActions, doctorDashboardAsyncActions } from "../../slices/doctorDashboardSlice";
+import AppointmentCard from "./AppointmentCard";
 
 
 // TODO: Remove the weird margin from top
 const Dashboard: FC = () => {
-    const [appointmentDate, setAppointmentDate] = useState<Dayjs | null>(dayjs())
+    const dispatch = useAppDispatch()
+    const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs())
     const [expand, setExpand] = useState<boolean>(true)
+    const { currentExpanded, appointments } = useAppSelector(state => state.doctorDashboard)
 
+    useEffect(() => {
+
+    }, [])
+
+    // TODO: Validation and loading and error states
+    const getAppointmentsOnDay = (date: any) => {
+        setSelectedDate(date)
+
+        const request: AppointmentsRequest = {
+            date: date.toISOString()
+        }
+
+        dispatch(doctorDashboardAsyncActions.fetchAppointments(request))
+    }
 
     return <Box sx={{
         position: "relative",
@@ -48,9 +67,9 @@ const Dashboard: FC = () => {
                         openTo="day"
                         disablePast
                         onChange={(date: any) => {
-                            // getSlotsOnDay(date)
+                            getAppointmentsOnDay(date)
                         }}
-                        value={appointmentDate}
+                        value={selectedDate}
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
@@ -59,77 +78,21 @@ const Dashboard: FC = () => {
             <Box sx={{
                 width: "100%",
                 display: "flex",
+                flexDirection: "column",
                 gap: 2,
                 alignItems: "flex-start",
-                p: 2
+                p: 2,
             }}>
-                <Accordion
-                    expanded={expand}
-                    onChange={e => { setExpand(!expand) }}
-                    sx={{
-                        width: "100%"
-                    }}
-
-                >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box sx={{
-                            display: "flex",
-                            gap: 4
-                        }}>
-                            <Typography variant="h6">
-                                <span style={{ fontWeight: "normal", color: "gray" }}>#4</span> Mr. Test Doe
-                            </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: "normal", color: "gray" }}>
-                                at 4:00
-                            </Typography>
-                        </Box>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Card sx={{
-                            gap: 2,
-                            display: "flex",
-                            width: "100%",
-                            flexDirection: "column"
-                        }}>
-                            <Typography>
-                                Patient History
-                            </Typography>
-
-                            <TextField
-                                type="text"
-                                label="Notes"
-                            />
-
-                            <TextField
-                                type="text"
-                                label="Prescriptions"
-                                multiline
-                                minRows={4}
-                                maxRows={4}
-                            />
-
-                            <Box sx={{
-                                width: "100%",
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: 2,
-                                mt: "auto",
-                                justifyContent: "flex-end"
-                            }}>
-                                <Button
-                                    variant="contained"
-                                    color="error"
-                                >Cancel</Button>
-                                <Button
-                                    variant="contained"
-                                    startIcon={<DoneIcon />}
-                                >Close</Button>
-                            </Box>
-                        </Card>
-                    </AccordionDetails>
-                </Accordion>
-
-
+                {
+                    appointments.length === 0
+                        ? <Typography sx={{ color: "gray" }}>
+                            No appointments
+                        </Typography>
+                        : appointments.map(apt => <AppointmentCard
+                            expanded={currentExpanded === apt.id}
+                            appointment={apt}
+                        />)
+                }
             </Box>
         </Box>
     </Box>
