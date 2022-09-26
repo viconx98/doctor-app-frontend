@@ -42,6 +42,21 @@ const completeOnboarding = createAsyncThunk(
     }
 )
 
+const fetchSpecialities = createAsyncThunk(
+    "doctorInfoSlice/fetchSpecialities",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Patient + Endpoints.Specialities)
+
+        const specialities = response.data 
+
+        for (const s of specialities) {
+            s.selected = false
+        }
+
+        return specialities
+    }
+)
+
 // TODO: Fetch specialities from backend
 const userInfoSlice = createSlice({
     name: "userInfoSlice",
@@ -76,11 +91,23 @@ const userInfoSlice = createSlice({
             state.isError = true
             state.error = action.error.message!
         })
+
+        builder.addCase(fetchSpecialities.pending, (state, action) => {
+            state.isLoading = true
+        }).addCase(fetchSpecialities.fulfilled, (state, action) => {
+            state.isLoading = false
+
+            state.lookingFor = action.payload
+        }).addCase(fetchSpecialities.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
+        })
     },
 })
 
 
 export const userInfoActions = { ...userInfoSlice.actions }
-export const userInfoAsyncActions = {completeOnboarding}
+export const userInfoAsyncActions = {completeOnboarding, fetchSpecialities}
 
 export default userInfoSlice.reducer

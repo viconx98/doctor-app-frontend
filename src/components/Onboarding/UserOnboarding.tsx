@@ -31,6 +31,10 @@ const UserOnboarding: FC = () => {
     const { gender, age, healthHistory, location, lookingFor, onBoardingComplete } = useAppSelector(state => state.userInfo)
 
     useEffect(() => {
+        dispatch(userInfoAsyncActions.fetchSpecialities())
+    }, [])
+
+    useEffect(() => {
         if (onBoardingComplete) {
             navigate("/")
         }
@@ -72,61 +76,100 @@ const UserOnboarding: FC = () => {
             width: "100%",
             maxWidth: "lg",
             minHeight: "100vh",
+            gap: 4
         }}>
             <Typography variant="h4">
-                Doctor User
+                Doctor App
             </Typography>
 
             <Typography>
-                Gender
-            </Typography>
-            <RadioGroup
-                defaultValue="female"
-                name="radio-buttons-group"
-                row
-                onChange={e => dispatch(userInfoActions.setGender(e.target.value))}
-            >
-                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                <FormControlLabel value="other" control={<Radio />} label="Other" />
-            </RadioGroup>
-
-            <Typography>
-                Age
-            </Typography>
-            <TextField type="number" defaultValue={18} onChange={e => dispatch(userInfoActions.setAge(Number(e.target.value)))} />
-
-
-            <Typography>
-                Health History
-            </Typography>
-            <TextField onChange={e => dispatch(userInfoActions.setHealthHistory(e.target.value))} />
-
-            {/* TODO: Use some kind of place picker */}
-            <Typography>
-                Location
-            </Typography>
-            <TextField onChange={e => dispatch(userInfoActions.setLocation(e.target.value))} />
-
-            <Typography>
-                Looking For
+                Please complete our onboarding process to start using the platform
             </Typography>
 
             <Box sx={{
                 display: "flex",
-                gap: 2,
-                flexWrap: "wrap"
+                flexDirection: "column",
+                gap: 1
             }}>
-                {
-                    lookingFor.map((q, i) => {
-                        return q.selected
-                            ? <Chip label={q.title} color="primary" icon={<DoneIcon />} onClick={e => toggleLookingFor(i)} />
-                            : <Chip label={q.title} onClick={e => toggleLookingFor(i)} />
-                    })
-                }
+                <Typography>
+                    Gender
+                </Typography>
+                <RadioGroup
+                    defaultValue="female"
+                    name="radio-buttons-group"
+                    row
+                    onChange={e => dispatch(userInfoActions.setGender(e.target.value))}
+                >
+                    <FormControlLabel value="female" control={<Radio />} label="Female" />
+                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                    <FormControlLabel value="other" control={<Radio />} label="Other" />
+                </RadioGroup>
+
             </Box>
 
-            <Button onClick={attemptOnboarding}>Submit</Button>
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1
+            }}>
+                <Typography>
+                    Age
+                </Typography>
+                <TextField type="number" defaultValue={18} onChange={e => dispatch(userInfoActions.setAge(Number(e.target.value)))} />
+
+
+            </Box>
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1
+            }}>
+                <Typography>
+                    Health History
+                </Typography>
+                <TextField onChange={e => dispatch(userInfoActions.setHealthHistory(e.target.value))} />
+
+            </Box>
+
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1
+            }}>
+                {/* TODO: Use some kind of place picker */}
+                <Typography>
+                    Location
+                </Typography>
+                <TextField onChange={e => dispatch(userInfoActions.setLocation(e.target.value))} />
+            </Box>
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1
+            }}>
+                <Typography>
+                    Looking For
+                </Typography>
+
+                <Box sx={{
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap"
+                }}>
+                    {
+                        lookingFor.map((q, i) => {
+                            return q.selected
+                                ? <Chip label={q.title} color="primary" icon={<DoneIcon />} onClick={e => toggleLookingFor(i)} />
+                                : <Chip label={q.title} onClick={e => toggleLookingFor(i)} />
+                        })
+                    }
+                </Box>
+            </Box>
+
+            <Button variant="contained" onClick={attemptOnboarding} sx={{mt: 4}} fullWidth>Submit</Button>
 
         </Box>
     </Box>

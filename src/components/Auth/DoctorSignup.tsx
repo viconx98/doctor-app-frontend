@@ -124,6 +124,8 @@ const DoctorSignup: FC = () => {
         </Card>
 
         <TextButton onClick={e => navigate("/auth/doctor/signin")}>Are you a doctor? Sign in here</TextButton>
+        <TextButton onClick={e => navigate("/auth/requestPasswordReset")}>Forgot password?</TextButton>
+
     </Box>
 }
 

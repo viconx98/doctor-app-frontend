@@ -1,8 +1,28 @@
 import { Box, Typography } from "@mui/material";
 import { FC, useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { authActions } from "../../slices/authSlice";
+import { doctorDashboardAsyncActions } from "../../slices/doctorDashboardSlice";
+import { useAppDispatch, useAppSelector } from "../../types/hooks";
 
 const DoctorHome: FC = () => {
+    const { onBoardingComplete } = useAppSelector(state => state.doctorDashboard)
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
+    const logout = () => {
+        dispatch(authActions.logout())
+        navigate("/auth")
+    }
+
+    useEffect(() => {
+        if (onBoardingComplete === false) {
+            navigate("/auth")
+        }
+
+        dispatch(doctorDashboardAsyncActions.verifyOnboard())
+    }, [onBoardingComplete])
 
     return <Box sx={{
         display: "flex",
@@ -40,16 +60,12 @@ const DoctorHome: FC = () => {
                     display: "flex",
                     gap: 2
                 }}>
-                    <Typography>
+                    <Typography onClick={e => navigate("")} sx={{ userSelect: "none", cursor: "pointer" }}>
                         Dashboard
                     </Typography>
 
-                    <Typography>
-                        Earnings
-                    </Typography>
-
-                    <Typography>
-                        Profile
+                    <Typography onClick={logout} sx={{ userSelect: "none", cursor: "pointer" }}>
+                        Logout
                     </Typography>
                 </Box>
             </Box>

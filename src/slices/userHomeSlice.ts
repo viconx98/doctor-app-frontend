@@ -17,8 +17,8 @@ interface UserHomeState extends SliceState {
     avaialbleSlots: AvailableSlots | null;
     selectedSlot: string | null;
     isFetchingSlots: boolean;
-
-}
+    onBoardingComplete: boolean | null;
+}   
 
 // TODO: Dynamically set doctorId based on whatever card was clicked
 const initialState: UserHomeState = {
@@ -33,8 +33,18 @@ const initialState: UserHomeState = {
     doctorId: 5,
     avaialbleSlots: null,
     selectedSlot: null,
-    isFetchingSlots: false
+    isFetchingSlots: false,
+    onBoardingComplete: null
 }
+
+const verifyOnboard = createAsyncThunk(
+    "userHomeSlice/verifyOnboard",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Patient + Endpoints.OnboardStatus)
+
+        return response.data.onboardingCompleted as boolean
+    }
+)
 
 const fetchAllDoctors = createAsyncThunk(
     "userHomeSlice/fetchAllDoctors",
@@ -145,11 +155,24 @@ const userHomeSlice = createSlice({
             state.error = action.error.message!
         })
 
-        
+        builder.addCase(verifyOnboard.pending, (state, action) => {
+            state.isLoading = true
+        }).addCase(verifyOnboard.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+
+            state.onBoardingComplete = action.payload
+        }).addCase(verifyOnboard.rejected, (state, action) => {
+            state.isFetchingSlots = false
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
+        })
+
     }
 })
 
 export const userHomeActions = { ...userHomeSlice.actions }
-export const userHomeAsyncActions = { fetchAllDoctors, fetchDoctorSlots, bookAppointment }
+export const userHomeAsyncActions = { fetchAllDoctors, fetchDoctorSlots, bookAppointment, verifyOnboard }
 
 export default userHomeSlice.reducer

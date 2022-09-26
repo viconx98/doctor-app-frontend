@@ -4,9 +4,10 @@ import { useAppSelector, useAppDispatch } from "../../types/hooks";
 import { useNavigate } from "react-router-dom";
 import FullscreenLoading from "../reusable/FullscreenLoading";
 import { authAsyncActions } from "../../slices/authSlice";
-import { Box, Typography, Chip, Slider, TextField, Button, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { Box, Typography, Chip, Slider, TextField, Button, RadioGroup, FormControlLabel, Radio, IconButton } from "@mui/material";
 import { PasswordResetRequest } from "../../types/auth";
 import { passwordResetAsyncActions } from "../../slices/passwordResetSlice";
+import HomeIcon from '@mui/icons-material/Home';
 
 // TODO: Remove the weird margin from top
 const RequestPasswordReset: FC = () => {
@@ -45,7 +46,10 @@ const RequestPasswordReset: FC = () => {
             minHeight: "100vh",
             gap: 2
         }}>
-            <Typography variant="h4">
+            <Typography variant="h4" component="div">
+                <IconButton onClick={e => navigate("/auth")}>
+                    <HomeIcon />
+                </IconButton>
                 Doctor App
             </Typography>
 

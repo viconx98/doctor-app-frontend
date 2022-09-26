@@ -24,13 +24,7 @@ const initialState: DoctorInfoState = {
     loading: null,
     isError: false,
     error: null,
-    qualifications: [
-        { id: 1, title: "ABCD", selected: false },
-        { id: 2, title: "EFGH", selected: false },
-        { id: 3, title: "HIJK", selected: false },
-        { id: 4, title: "LMNO", selected: false },
-        { id: 5, title: "PQRST", selected: false },
-    ],
+    qualifications: [],
     specialities: [
         { id: 6, title: "ABCD", selected: false },
         { id: 7, title: "EFGH", selected: false },
@@ -55,6 +49,36 @@ for (const day of initialState.days) {
         initialState.availability[day][slot] = false
     }
 }
+
+const fetchQualifications = createAsyncThunk(
+    "doctorInfoSlice/fetchQualifications",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Doctor + Endpoints.Qualifications)
+
+        const qualifications = response.data 
+
+        for (const q of qualifications) {
+            q.selected = false
+        }
+
+        return qualifications
+    }
+)
+
+const fetchSpecialities = createAsyncThunk(
+    "doctorInfoSlice/fetchSpecialities",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Doctor + Endpoints.Specialities)
+
+        const specialities = response.data 
+
+        for (const s of specialities) {
+            s.selected = false
+        }
+
+        return specialities
+    }
+)
 
 const completeOnboarding = createAsyncThunk(
     "doctorInfoSlice/completeOnboarding",
@@ -111,11 +135,35 @@ const doctorInfoSlice = createSlice({
             state.isError = true
             state.error = action.error.message!
         })
+
+        builder.addCase(fetchQualifications.pending, (state, action) => {
+            state.isLoading = true
+        }).addCase(fetchQualifications.fulfilled, (state, action) => {
+            state.isLoading = false
+
+            state.qualifications = action.payload
+        }).addCase(fetchQualifications.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
+        })
+
+        builder.addCase(fetchSpecialities.pending, (state, action) => {
+            state.isLoading = true
+        }).addCase(fetchSpecialities.fulfilled, (state, action) => {
+            state.isLoading = false
+
+            state.specialities = action.payload
+        }).addCase(fetchSpecialities.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
+        })
     }
 })
 
 
 export const doctorInfoActions = { ...doctorInfoSlice.actions }
-export const doctorInfoAsyncActions = { completeOnboarding }
+export const doctorInfoAsyncActions = { completeOnboarding, fetchQualifications, fetchSpecialities }
 
 export default doctorInfoSlice.reducer

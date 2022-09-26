@@ -7,6 +7,7 @@ interface DoctorDashboardState extends SliceState {
     currentExpanded: number | null;
     appointments: DoctorAppointment[];
     staticAppointments: DoctorAppointment[];
+    onBoardingComplete: boolean | null;
 }
 
 const initialState: DoctorDashboardState = {
@@ -16,8 +17,18 @@ const initialState: DoctorDashboardState = {
     error: null,
     currentExpanded: null,
     appointments: [],
-    staticAppointments: []
+    staticAppointments: [],
+    onBoardingComplete: null
 }
+
+const verifyOnboard = createAsyncThunk(
+    "doctorDashboardSlice/verifyOnboard",
+    async () => {
+        const response = await axiosClient.get(Endpoints.Doctor + Endpoints.OnboardStatus)
+
+        return response.data.onboardingCompleted as boolean
+    }
+)
 
 const fetchAppointments = createAsyncThunk(
     "doctorDashboardSlice/fetchAppointments",
@@ -101,7 +112,7 @@ const doctorDashboardSlice = createSlice({
             state.isLoading = false
             state.error = action.error.message!
         })
-        
+
         // Cancel appointment
         builder.addCase(cancelAppointment.pending, (state, action) => {
             state.isLoading = true
@@ -111,7 +122,7 @@ const doctorDashboardSlice = createSlice({
 
             const cancelledAppointment = action.payload
             const appointmentIdx = state.appointments.findIndex(apt => apt.id === cancelledAppointment.id)
-            
+
             state.appointments.splice(appointmentIdx, 1)
             state.staticAppointments.push(cancelledAppointment)
         }).addCase(cancelAppointment.rejected, (state, action) => {
@@ -121,7 +132,7 @@ const doctorDashboardSlice = createSlice({
 
         })
 
-        
+
         // Close appointment
         builder.addCase(closeAppointment.pending, (state, action) => {
             state.isLoading = true
@@ -131,7 +142,7 @@ const doctorDashboardSlice = createSlice({
 
             const closeedAppointment = action.payload
             const appointmentIdx = state.appointments.findIndex(apt => apt.id === closeedAppointment.id)
-            
+
             state.appointments.splice(appointmentIdx, 1)
 
             state.staticAppointments.push(closeedAppointment)
@@ -142,10 +153,23 @@ const doctorDashboardSlice = createSlice({
             state.error = action.error.message!
 
         })
+
+        builder.addCase(verifyOnboard.pending, (state, action) => {
+            state.isLoading = true
+        }).addCase(verifyOnboard.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isError = false
+            console.log(action.payload)
+            state.onBoardingComplete = action.payload
+        }).addCase(verifyOnboard.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.error = action.error.message!
+        })
     }
 })
 
 
 export const doctorDashboardActions = { ...doctorDashboardSlice.actions }
-export const doctorDashboardAsyncActions = { fetchAppointments, cancelAppointment, fetchStaticAppointments, closeAppointment }
+export const doctorDashboardAsyncActions = { verifyOnboard, fetchAppointments, cancelAppointment, fetchStaticAppointments, closeAppointment }
 export default doctorDashboardSlice.reducer

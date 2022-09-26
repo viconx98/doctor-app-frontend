@@ -107,6 +107,11 @@ const authSlice = createSlice({
         setLoading(state, action: PayloadAction<[boolean, string | null]>) {
             state.isLoading = action.payload[0]
             state.loading = action.payload[1]
+        },
+        logout(state, action: PayloadAction<void>){
+            state.authData = null
+            state.authComplete = false
+            
         }
     },
     extraReducers: (builder) => {

@@ -2,14 +2,14 @@ import axios from "axios"
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL 
 
-console.log(baseUrl)
-
 export enum Endpoints {
     Doctor = "/doctor",
     Patient = "/patient",
     Signup = "/auth/signup",
     Signin = "/auth/signin",
     OnboardStatus = "/onboardStatus",
+    Qualifications = "/qualifications",
+    Specialities = "/specialities",
     Onbard = "/onboard",
     AllDoctors = "/doctors",
     DoctorSlots = "/doctorSlots",

@@ -43,6 +43,11 @@ const DoctorOnboarding: FC = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        dispatch(doctorInfoAsyncActions.fetchQualifications())
+        dispatch(doctorInfoAsyncActions.fetchSpecialities())
+    }, [])
+
+    useEffect(() => {
         if (onBoardingComplete) {
             navigate("/")
         }
@@ -120,6 +125,7 @@ const DoctorOnboarding: FC = () => {
     }}>
         <Box sx={{
             p: 2,
+            gap:4,
             display: "flex",
             alignItems: "flex-start",
             justifyContent: "flex-start",
@@ -129,114 +135,172 @@ const DoctorOnboarding: FC = () => {
             minHeight: "100vh",
         }}>
             <Typography variant="h4">
-                User
+                Doctor App
             </Typography>
 
             <Typography>
-                Qualifications
+                Please complete our onboarding process to get discovered by users
             </Typography>
 
             <Box sx={{
                 display: "flex",
-                gap: 2,
-                flexWrap: "wrap"
+                flexDirection: "column",
+                gap: 2
             }}>
-                {
-                    qualifications.map((q, i) => {
-                        return q.selected
-                            ? <Chip label={q.title} color="primary" icon={<DoneIcon />} onClick={e => toggleQualification(i)} />
-                            : <Chip label={q.title} onClick={e => toggleQualification(i)} />
-                    })
-                }
-            </Box>
+                <Typography>
+                    Qualifications
+                </Typography>
 
-            <Typography>
-                Experience (in years)
-            </Typography>
-            <Slider
-                valueLabelDisplay="auto"
-                marks={experienceMarks}
-                getAriaValueText={experienceText}
-                defaultValue={1} step={1} min={1} max={10}
-                onChange={(e, val) => dispatch(doctorInfoActions.setExperience(val as number))}
-            />
-
-            <Typography>
-                Hospital affiliation (optional)
-            </Typography>
-            <TextField onChange={e => dispatch(doctorInfoActions.setHospital(e.target.value))} />
-
-            {/* TODO: Use some kind of place picker */}
-            <Typography>
-                Location
-            </Typography>
-            <TextField onChange={e => dispatch(doctorInfoActions.setLocation(e.target.value))} />
-
-            <Typography>
-                Specialities
-            </Typography>
-
-            <Box sx={{
-                display: "flex",
-                gap: 2,
-                flexWrap: "wrap"
-            }}>
-                {
-                    specialities.map((q, i) => {
-                        return q.selected
-                            ? <Chip label={q.title} color="primary" icon={<DoneIcon />} onClick={e => toggleSpeciality(i)} />
-                            : <Chip label={q.title} onClick={e => toggleSpeciality(i)} />
-                    })
-                }
-            </Box>
-
-            <Typography>
-                Consultation Fees
-            </Typography>
-            <TextField type="number" onChange={e => dispatch(doctorInfoActions.setFees(Number(e.target.value)))} />
-
-            {/* TODO: Different styling for chips */}
-            <Typography>
-                Availability
-            </Typography>
-
-            <Box sx={{
-                display: "flex",
-                gap: 2,
-                flexWrap: "wrap",
-                textTransform: "capitalize"
-            }}>
-                {
-                    days.map(day => {
-                        const hasSlots = Object.values(availability[day]).some(slot => slot)
-
-                        return day === selectedDay
-                            ? <Chip label={day} color="primary" onClick={e => selectDay(day)} />
-                            : hasSlots
-                                ? <Chip label={day} onClick={e => selectDay(day)} icon={<Brightness1Icon sx={{ "&&": { color: "white", transform: "scale(0.5)" } }} />} />
-                                : <Chip label={day} onClick={e => selectDay(day)} />
-                    })
-                }
-            </Box>
-
-            <Box sx={{
-                mt: 2,
-                display: "flex",
-                gap: 2,
-                flexWrap: "wrap",
-            }}>
-                {
-                    Object.entries(availability[selectedDay])
-                        .map(entry => {
-                            let [key, val] = entry
-                            return val
-                                ? <Chip label={timeLookup[key]} color="primary" onClick={e => selectSlot(key)} />
-                                : <Chip label={timeLookup[key]} onClick={e => selectSlot(key)} />
+                <Box sx={{
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap"
+                }}>
+                    {
+                        qualifications.map((q, i) => {
+                            return q.selected
+                                ? <Chip label={q.title} color="primary" icon={<DoneIcon />} onClick={e => toggleQualification(i)} />
+                                : <Chip label={q.title} onClick={e => toggleQualification(i)} />
                         })
-                }
+                    }
+                </Box>
+
             </Box>
 
-            <Button onClick={attemptOnboarding}>Submit</Button>
+            <Box sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
+
+                <Typography>
+                    Experience (in years)
+                </Typography>
+                <Slider
+                    sx={{ width: "80%", ml: "auto", mr: "auto" }}
+                    valueLabelDisplay="auto"
+                    marks={experienceMarks}
+                    getAriaValueText={experienceText}
+                    defaultValue={1} step={1} min={1} max={10}
+                    onChange={(e, val) => dispatch(doctorInfoActions.setExperience(val as number))}
+                />
+            </Box>
+
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
+                <Typography>
+                    Hospital affiliation (optional)
+                </Typography>
+                <TextField onChange={e => dispatch(doctorInfoActions.setHospital(e.target.value))} />
+            </Box>
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
+                {/* TODO: Use some kind of place picker */}
+                <Typography>
+                    Location
+                </Typography>
+                <TextField onChange={e => dispatch(doctorInfoActions.setLocation(e.target.value))} />
+
+            </Box>
+
+
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
+
+                <Typography>
+                    Specialities
+                </Typography>
+                <Box sx={{
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap"
+                }}>
+                    {
+                        specialities.map((q, i) => {
+                            return q.selected
+                                ? <Chip label={q.title} color="primary" icon={<DoneIcon />} onClick={e => toggleSpeciality(i)} />
+                                : <Chip label={q.title} onClick={e => toggleSpeciality(i)} />
+                        })
+                    }
+                </Box>
+            </Box>
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
+                <Typography>
+                    Consultation Fees
+                </Typography>
+                <TextField type="number" onChange={e => dispatch(doctorInfoActions.setFees(Number(e.target.value)))} />
+
+            </Box>
+
+
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+            }}>
+                <Typography>
+                    Availability
+                </Typography>
+
+                <Box sx={{
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap",
+                    textTransform: "capitalize"
+                }}>
+                    {
+                        days.map(day => {
+                            const hasSlots = Object.values(availability[day]).some(slot => slot)
+
+                            return day === selectedDay
+                                ? <Chip label={day} color="primary" onClick={e => selectDay(day)} />
+                                : hasSlots
+                                    ? <Chip label={day} onClick={e => selectDay(day)} icon={<Brightness1Icon sx={{ "&&": { color: "white", transform: "scale(0.5)" } }} />} />
+                                    : <Chip label={day} onClick={e => selectDay(day)} />
+                        })
+                    }
+                </Box>
+
+                {/* TODO: Different styling for chips */}
+                <Box sx={{
+                    mt: 2,
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap",
+                }}>
+                    {
+                        Object.entries(availability[selectedDay])
+                            .map(entry => {
+                                let [key, val] = entry
+                                return val
+                                    ? <Chip label={timeLookup[key]} color="primary" onClick={e => selectSlot(key)} />
+                                    : <Chip label={timeLookup[key]} onClick={e => selectSlot(key)} />
+                            })
+                    }
+                </Box>
+
+
+            </Box>
+
+            <Button fullWidth variant="contained" onClick={attemptOnboarding} sx={{mt: 4}}>Submit</Button>
         </Box>
     </Box>
 }
