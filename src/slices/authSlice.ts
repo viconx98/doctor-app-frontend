@@ -111,7 +111,7 @@ const authSlice = createSlice({
         logout(state, action: PayloadAction<void>){
             state.authData = null
             state.authComplete = false
-            
+            localStorage.clear()
         }
     },
     extraReducers: (builder) => {
