@@ -105,11 +105,13 @@ const StaticAppointmentCard: FC<StaticAppointmentCardProps> = ({ expanded, appoi
                     </Typography>
                 </Typography>
 
-                <Divider />
 
                 {
                     appointment.feedbackCompleted
                     && <Box>
+
+                        <Divider />
+
                         <Rating
                             name="doctor-rating"
                             value={appointment.rating}

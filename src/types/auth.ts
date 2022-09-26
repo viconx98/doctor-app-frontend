@@ -23,3 +23,14 @@ export interface SigninRequest {
     email: string,
     password: string
 }
+
+export interface PasswordResetRequest {
+    type: string;
+    email: string;
+}
+
+export interface PerformPasswordResetRequest {
+    secret: string;
+    type: string;
+    newPassword: string;
+}

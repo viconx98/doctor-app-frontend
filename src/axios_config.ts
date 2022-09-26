@@ -18,6 +18,8 @@ export enum Endpoints {
     CancelAppointment = "/cancelAppointment",
     CloseAppointment = "/closeAppointment",
     RateAndReview = "/rateAndReview",
+    RequestPasswordReset = "/auth/requestPasswordReset",
+    PerformPasswordReset = "/auth/passwordReset"
 }
 
 const axiosClient = axios.create({
@@ -43,7 +45,7 @@ axiosClient.interceptors.response.use(
 // Request interceptor to pass the token
 axiosClient.interceptors.request.use(
     (request) => {
-        if ( request.url?.endsWith(Endpoints.Signin) || request.url?.endsWith(Endpoints.Signup))
+        if ( request.url?.endsWith(Endpoints.Signin) || request.url?.endsWith(Endpoints.Signup) || request.url?.endsWith(Endpoints.RequestPasswordReset) || request.url?.endsWith(Endpoints.PerformPasswordReset))
             return request
 
         const authData = JSON.parse(localStorage.getItem("authdata")!)

@@ -5,6 +5,7 @@ import doctorInfoReduer from "./slices/doctorOnboardingSlice"
 import userHomeReducer from "./slices/userHomeSlice";
 import userInfoReduer from "./slices/userOnboardingSlice"
 import userAppointmentsReducer from "./slices/userAppointmentsSlice";
+import passwordResetReducer from "./slices/passwordResetSlice";
 
 const mainStore = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const mainStore = configureStore({
         userInfo: userInfoReduer,
         userHome: userHomeReducer,
         doctorDashboard: doctorDashboardReducer,
-        userAppointments: userAppointmentsReducer
+        userAppointments: userAppointmentsReducer,
+        passwordReset: passwordResetReducer
     }
 })
 

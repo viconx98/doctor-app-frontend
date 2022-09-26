@@ -15,6 +15,8 @@ import BrowseDoctors from './User/BrowseDoctors';
 import { useAppSelector } from "../types/hooks";
 import Dashboard from './Doctor/Dashboard';
 import Appointments from './User/Appointments';
+import RequestPasswordReset from './Auth/RequestPasswordReset';
+import PerformPasswordReset from './Auth/PerformPasswordReset';
 
 const appTheme = createTheme({
 	typography: {
@@ -60,6 +62,8 @@ function App() {
 				<Route path="/auth/signup" element={<UserSignup />} />
 				<Route path="/auth/doctor/signup" element={<DoctorSignup />} />
 				<Route path="/auth/doctor/signin" element={<DoctorSignin />} />
+				<Route path="/auth/requestPasswordReset" element={<RequestPasswordReset />}/>
+				<Route path="/auth/resetPassword" element={<PerformPasswordReset />}/>
 			</Route>
 
 			<Route path="/onboard/doctor" element={<DoctorOnboarding />} />
