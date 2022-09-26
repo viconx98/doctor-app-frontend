@@ -10,7 +10,7 @@ export interface Patient {
     lookingFor: string[]
 }
 
-export interface Appointment {
+export interface DoctorAppointment {
     id: number;
     doctorId: number;
     patientId: number;

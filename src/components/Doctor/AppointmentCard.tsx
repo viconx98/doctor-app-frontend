@@ -7,7 +7,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Appointment, CloseAppointmentRequest } from "../../types/dashboard";
+import { DoctorAppointment, CloseAppointmentRequest } from "../../types/dashboard";
 import { timeLookup } from "../../types/onboarding";
 import { doctorDashboardActions, doctorDashboardAsyncActions } from "../../slices/doctorDashboardSlice";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -21,7 +21,7 @@ const closingValidations = yup.object().shape({
 
 interface AppointmentCardProps {
     expanded: boolean;
-    appointment: Appointment;
+    appointment: DoctorAppointment;
 }
 
 // TODO: Close the appointment

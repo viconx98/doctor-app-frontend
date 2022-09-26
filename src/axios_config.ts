@@ -16,7 +16,8 @@ export enum Endpoints {
     CreateAppointment = "/createAppointment",
     GetAppointments = "/appointments",
     CancelAppointment = "/cancelAppointment",
-    CloseAppointment = "/closeAppointment"
+    CloseAppointment = "/closeAppointment",
+    RateAndReview = "/rateAndReview",
 }
 
 const axiosClient = axios.create({

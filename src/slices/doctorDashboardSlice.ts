@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosClient, { Endpoints } from "../axios_config";
-import { AppointmentsRequest, Appointment, CloseAppointmentRequest } from "../types/dashboard";
+import { AppointmentsRequest, DoctorAppointment, CloseAppointmentRequest } from "../types/dashboard";
 import { SliceState } from "../types/slice";
 
 interface DoctorDashboardState extends SliceState {
     currentExpanded: number | null;
-    appointments: Appointment[];
-    staticAppointments: Appointment[];
+    appointments: DoctorAppointment[];
+    staticAppointments: DoctorAppointment[];
 }
 
 const initialState: DoctorDashboardState = {
@@ -29,7 +29,7 @@ const fetchAppointments = createAsyncThunk(
 
         const response = await axiosClient.get(Endpoints.Doctor + Endpoints.GetAppointments, { params: query })
 
-        return response.data as Appointment[]
+        return response.data as DoctorAppointment[]
     }
 )
 
@@ -43,7 +43,7 @@ const fetchStaticAppointments = createAsyncThunk(
 
         const response = await axiosClient.get(Endpoints.Doctor + Endpoints.GetAppointments, { params: query })
 
-        return response.data as Appointment[]
+        return response.data as DoctorAppointment[]
     }
 )
 
@@ -52,7 +52,7 @@ const cancelAppointment = createAsyncThunk(
     async (appointmentId: number) => {
         const response = await axiosClient.post(Endpoints.Doctor + Endpoints.CancelAppointment, { appointmentId })
 
-        return response.data as Appointment
+        return response.data as DoctorAppointment
     }
 )
 
@@ -61,7 +61,7 @@ const closeAppointment = createAsyncThunk(
     async (request: CloseAppointmentRequest) => {
         const response = await axiosClient.post(Endpoints.Doctor + Endpoints.CloseAppointment, request)
 
-        return response.data as Appointment
+        return response.data as DoctorAppointment
     }
 )
 

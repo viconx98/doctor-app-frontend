@@ -14,6 +14,7 @@ import BaseHome from './Home/BaseHome';
 import BrowseDoctors from './User/BrowseDoctors';
 import { useAppSelector } from "../types/hooks";
 import Dashboard from './Doctor/Dashboard';
+import Appointments from './User/Appointments';
 
 const appTheme = createTheme({
 	typography: {
@@ -46,6 +47,7 @@ function App() {
 						: authData.user.type === "patient"
 							? <>
 								<Route index element={<BrowseDoctors />} />
+								<Route path="appointments" element={<Appointments />} />
 							</>
 							: <>
 								<Route index element={<Dashboard />} />
